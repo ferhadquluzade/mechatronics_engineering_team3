@@ -1,3 +1,3 @@
-*Outdated* directory for components diagram, state diagram, and uppaal
+Outdated directory for components diagram, state diagram, and uppaal
 
 New directory
