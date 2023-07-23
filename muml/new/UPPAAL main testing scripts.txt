@@ -1,0 +1,8 @@
+
+Main scripts used for testing:
+E<> (PlantObserverAgent.notifyingWeeder) and (isWeederDone == true)
+E<> (WeederAgent.ObserverIsBeingResponded) and (isRemovalAssigned == true) 
+E<> (WeederAgent.WeedsEliminating) and (removalTime<=allowableTime)
+E<> (CropProtectionAgent.Pesticidising) and (pesticidingTime<=allowablePesticidingTime)
+A[] not deadlock
+
