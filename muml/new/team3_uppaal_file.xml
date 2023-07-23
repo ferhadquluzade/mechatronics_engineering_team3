@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+bool isObservationAssigned = true, isRemovalAssigned=true, isPesticidingAssigned=true;
+
+bool isWeederDone=false, isProtectorDone=false;
+
+chan weedData, diseasedPlantData, isWeedDetected, isDiseasedPlantDetected;
+
+clock removalTime;
+int allowableTime=20;
+
+clock pesticidingTime=0;
+int allowablePesticidingTime=20;
+
+
+//const int UNITS_NUM = 2;
+//const string UNITS_ARR[UNITS_NUM] = {"WeederAgent","CropProtectionAgent"};
+//int priorInd=0;//priority index
+ </declaration>
+	<template>
+		<name x="5" y="5">PlantObserver</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-915" y="-688">
+			<name x="-1020" y="-671">Observing</name>
+		</location>
+		<location id="id1" x="-263" y="-714">
+			<name x="-408" y="-697">notifyingWeeder</name>
+		</location>
+		<location id="id2" x="-263" y="-654">
+			<name x="-408" y="-569">notifyingProtector</name>
+		</location>
+		<location id="id3" x="-1164" y="-688">
+			<name x="-1174" y="-722">Off</name>
+		</location>
+		<init ref="id3"/>
+		<transition id="id4">
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-697" y="-671">isDiseasedPlantDetected?</label>
+			<nail x="-858" y="-654"/>
+		</transition>
+		<transition id="id5">
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-1146" y="-722">isObservationAssigned==true</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-697" y="-714">isWeedDetected?</label>
+			<nail x="-858" y="-714"/>
+		</transition>
+		<transition id="id7">
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-697" y="-569">isProtectorDone==true</label>
+			<nail x="-263" y="-578"/>
+			<nail x="-917" y="-578"/>
+		</transition>
+		<transition id="id8">
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-195" y="-637">diseasedPlantData!</label>
+			<nail x="-212" y="-654"/>
+			<nail x="-212" y="-611"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-688" y="-816">isWeederDone==true</label>
+			<nail x="-263" y="-790"/>
+			<nail x="-917" y="-790"/>
+		</transition>
+		<transition id="id10">
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-195" y="-722">weedData!</label>
+			<nail x="-212" y="-714"/>
+			<nail x="-212" y="-756"/>
+		</transition>
+	</template>
+	<template>
+		<name>Weeder</name>
+		<declaration>
+</declaration>
+		<location id="id11" x="-1043" y="-697">
+			<name x="-1088" y="-731">IDLE</name>
+		</location>
+		<location id="id12" x="-246" y="-544">
+			<name x="-212" y="-569">WeedsEliminating</name>
+			<label kind="invariant" x="-212" y="-544">removalTime&lt;=allowableTime</label>
+		</location>
+		<location id="id13" x="-246" y="-697">
+			<name x="-221" y="-705">ObserverIsBeingResponded</name>
+		</location>
+		<location id="id14" x="-1207" y="-697">
+			<name x="-1217" y="-731">Off</name>
+		</location>
+		<init ref="id14"/>
+		<transition id="id15">
+			<source ref="id14"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-680" y="-722">isRemovalAssigned==true</label>
+		</transition>
+		<transition id="id16">
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="assignment" x="-772" y="-544">isWeederDone=true</label>
+			<nail x="-1044" y="-552"/>
+		</transition>
+		<transition id="id17">
+			<source ref="id11"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-1025" y="-714">isWeedDetected!</label>
+			<label kind="assignment" x="-943" y="-697">isWeederDone=false</label>
+		</transition>
+		<transition id="id18">
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="assignment" x="-212" y="-680">removalTime=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>CropProtection</name>
+		<location id="id19" x="-399" y="-425">
+			<name x="-409" y="-459">IDLE</name>
+		</location>
+		<location id="id20" x="102" y="-289">
+			<name x="119" y="-314">Pesticidising</name>
+			<label kind="invariant" x="0" y="-272">pesticidingTime&lt;=allowablePesticidingTime</label>
+		</location>
+		<location id="id21" x="102" y="-425">
+			<name x="34" y="-467">ObserverIsBeingResponded</name>
+		</location>
+		<location id="id22" x="-799" y="-425">
+			<name x="-809" y="-459">Off</name>
+		</location>
+		<location id="id23" x="-799" y="-425">
+		</location>
+		<init ref="id22"/>
+		<transition id="id24">
+			<source ref="id22"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-756" y="-459">isPesticidingAssigned==true</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id20"/>
+			<target ref="id19"/>
+			<label kind="assignment" x="-280" y="-272">isProtectorDone=true</label>
+			<nail x="25" y="-289"/>
+			<nail x="-399" y="-289"/>
+		</transition>
+		<transition id="id26">
+			<source ref="id19"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-340" y="-459">isDiseasedPlantDetected!</label>
+			<label kind="assignment" x="-646" y="-416">isPesticidingAssigned=false</label>
+		</transition>
+		<transition id="id27">
+			<source ref="id21"/>
+			<target ref="id20"/>
+			<label kind="assignment" x="-42" y="-374">pesticidingTime=0</label>
+			<nail x="102" y="-365"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+PlantObserverAgent = PlantObserver();
+WeederAgent= Weeder();
+CropProtectionAgent=CropProtection();
+// List one or more processes to be composed into a system.
+system PlantObserverAgent,WeederAgent,CropProtectionAgent;
+</system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; (CropProtectionAgent.Pesticidising) and (pesticidingTime&lt;=allowablePesticidingTime)
+</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2023-06-21 20:33:18 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>
